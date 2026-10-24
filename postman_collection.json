@@ -1,0 +1,550 @@
+{
+  "info": {
+    "_postman_id": "c0c0c0c0-1234-5678-9abc-nocontact01",
+    "name": "No Contact & Recovery API",
+    "description": "Complete collection of endpoints for the No Contact & Emotional Recovery backend project with AI.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://54.80.114.98:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "01. Authentication & Security",
+      "item": [
+        {
+          "name": "User Registration",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sam Developer\",\n  \"email\": \"test.user@example.com\",\n  \"password\": \"SuperSecretPassword123!\",\n  \"exName\": \"Camila\",\n  \"exProfilePhoto\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login with Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.accessToken) {",
+                  "    pm.collectionVariables.set('token', jsonData.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', jsonData.refreshToken);",
+                  "    console.log('JWT token captured successfully');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test.user@example.com\",\n  \"password\": \"SuperSecretPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.accessToken) {",
+                  "    pm.collectionVariables.set('token', jsonData.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', jsonData.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Google OAuth2 Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"GOOGLE_ID_TOKEN_HERE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/google",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "google"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. Profile & User",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Ex Configuration",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exName\": \"Camila R.\",\n  \"exNickname\": \"Cami\",\n  \"exProfilePhoto\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb\",\n  \"exWhatsAppStatus\": \"online\",\n  \"exPersonality\": \"COLD\",\n  \"breakupDate\": \"2026-08-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/ex-config",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "ex-config"]
+            }
+          }
+        },
+        {
+          "name": "Change App Mode (REMEMBER / MOVE_ON)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"MOVE_ON\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/mode",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "mode"]
+            }
+          }
+        },
+        {
+          "name": "Upload Ex Chat Dataset (Inspired by JustZando)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exSenderName\": \"Camila\",\n  \"chatContent\": \"[12/05/24, 22:10] Sam: Hi Camila, how are you?\\n[12/05/24, 22:11] Camila: Hi. Busy. 👍\\n[12/05/24, 22:12] Sam: I just wanted to hear from you...\\n[12/05/24, 22:15] Camila: Stop texting me. Ok. 🙄\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/ex-dataset",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "ex-dataset"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. Chats & AI Simulator",
+      "item": [
+        {
+          "name": "List All Chats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/chats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "chats"]
+            }
+          }
+        },
+        {
+          "name": "Get Chat with the Ex (AI Simulator)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/chats/CHAT_EX",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "chats", "CHAT_EX"]
+            }
+          }
+        },
+        {
+          "name": "Get Emotional Support Chat",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/chats/CHAT_SUPPORT",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "chats", "CHAT_SUPPORT"]
+            }
+          }
+        },
+        {
+          "name": "Send Message to Chat",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Hi, I have been thinking about you... how have you been?\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/chats/1/messages",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "chats", "1", "messages"]
+            }
+          }
+        },
+        {
+          "name": "Clear Chat History",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/chats/1/messages",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "chats", "1", "messages"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. Emotional Journal",
+      "item": [
+        {
+          "name": "List Journal Entries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/journals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "journals"]
+            }
+          }
+        },
+        {
+          "name": "Create Journal Entry",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Day 12: It Still Hurts a Little\",\n  \"content\": \"Today I walked past the park where we used to walk. It made me a bit nostalgic but I decided not to text and to focus on my projects instead.\",\n  \"mood\": \"AT_PEACE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/journals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "journals"]
+            }
+          }
+        },
+        {
+          "name": "Delete Journal Entry",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/journals/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "journals", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05. No Contact & Streaks",
+      "item": [
+        {
+          "name": "Get Streak Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/no-contact/statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "no-contact", "statistics"]
+            }
+          }
+        },
+        {
+          "name": "List Relapse History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/no-contact/relapses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "no-contact", "relapses"]
+            }
+          }
+        },
+        {
+          "name": "Record Relapse (Fires Event and Resets Streak)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"I saw her Instagram story from a party and sent her a message\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/no-contact/relapses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "no-contact", "relapses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. Red Flags",
+      "item": [
+        {
+          "name": "List Recorded Red Flags",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/red-flags",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "red-flags"]
+            }
+          }
+        },
+        {
+          "name": "Create Red Flag",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Constant gaslighting\",\n  \"description\": \"She always dismissed my concerns, saying I was exaggerating or crazy.\",\n  \"severity\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/red-flags",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "red-flags"]
+            }
+          }
+        },
+        {
+          "name": "Delete Red Flag",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/red-flags/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "red-flags", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07. Nostalgic Memories",
+      "item": [
+        {
+          "name": "List Memories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "memories"]
+            }
+          }
+        },
+        {
+          "name": "Create Memory",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Trip to the beach\",\n  \"description\": \"Our first trip together in February.\",\n  \"photoUrl\": \"https://images.unsplash.com/photo-1507525428034-b723cf961d3e\",\n  \"memoryDate\": \"2025-02-14\",\n  \"nostalgiaLevel\": 4,\n  \"type\": \"PHOTO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "memories"]
+            }
+          }
+        },
+        {
+          "name": "Delete Memory",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "memories", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "08. Admin Panel (Requires ROLE_ADMIN)",
+      "item": [
+        {
+          "name": "Get Global System Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/global-metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "global-metrics"]
+            }
+          }
+        },
+        {
+          "name": "List All Ad Configurations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/ads",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "ads"]
+            }
+          }
+        },
+        {
+          "name": "Create Ad Configuration",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"BANNER_CHAT_MOTIVATIONAL\",\n  \"title\": \"Recovery Chat Banner\",\n  \"adUnitId\": \"ca-app-pub-3940256099942544/6300978111\",\n  \"active\": true,\n  \"messageFrequency\": 5,\n  \"description\": \"Banner shown every 5 messages in the simulator\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/ads",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "ads"]
+            }
+          }
+        },
+        {
+          "name": "Toggle Ad Active/Inactive Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/ads/1/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "ads", "1", "toggle"]
+            }
+          }
+        },
+        {
+          "name": "List Active Ads (Public/Client)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/ads/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "ads", "active"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
